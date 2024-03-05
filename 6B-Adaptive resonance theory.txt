@@ -1,0 +1,29 @@
+import numpy as np
+class ART1:
+ def __init__(self, input_size, rho, alpha):
+     self.input_size = input_size
+     self.rho = rho
+     self.alpha = alpha
+     self.weights = np.random.rand(input_size) 
+     self.tj = np.ones(input_size) 
+ def train(self, input_data, max_epochs):
+     for epoch in range(max_epochs):
+         for pattern in input_data:
+             f1a_activations = pattern
+             f2_activations = np.zeros(self.input_size)
+             norm_s = np.sum(pattern)
+             x1 = pattern
+             for j in range(self.input_size):
+                 if self.tj[j] != -1:
+                     f2_activations[j] = np.dot(self.weights, x1)
+             j = np.argmax(f2_activations)
+             self.weights[j] = self.alpha * x1[j] / (self.alpha - 1 + norm_s)
+             self.tj[j] = x1[j]
+         print(f'Epoch {epoch + 1}, Weights: {self.weights}')
+input_size = 5
+rho = 0.5
+alpha = 0.1
+art1 = ART1(input_size, rho, alpha)
+input_data = np.array([[0, 1, 0, 1, 0], [1, 0, 1, 0, 1]])
+max_epochs = 10
+art1.train(input_data, max_epochs)

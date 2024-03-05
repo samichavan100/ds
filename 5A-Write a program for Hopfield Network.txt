@@ -1,0 +1,40 @@
+import numpy as np
+patterns = np.array([
+    [-1, -1, 1, -1, 1],
+    [1, -1, 1, -1, 1],
+    [-1, 1, -1, 1, -1],
+    [1, 1, 1, -1, -1]
+])
+
+noisy_patterns = np.array([
+    [-1, -1, -1, -1, 1],
+    [1, -1, 1, -1, -1],
+    [-1, 1, -1, -1, -1],
+])
+
+pattern_size = 5
+
+weights = np.zeros((pattern_size, pattern_size))
+
+for pattern in patterns:
+    pattern = np.reshape(pattern, (1, pattern_size))
+    weights += np.dot(pattern.T, pattern)
+np.fill_diagonal(weights, 0)
+
+weights
+max_iterations=5
+
+for i, noisy_pattern in enumerate(noisy_patterns):
+    iteration = 0
+    while iteration < max_iterations:
+        iteration += 1
+        prev_pattern = np.copy(noisy_pattern)
+        noisy_pattern = np.sign(np.dot(noisy_pattern, weights))
+        if np.array_equal(noisy_pattern, prev_pattern):
+            break
+    print('{:<20} {:<10} {:<10}'.format("Original pattern", i, str(tuple(patterns[i]))))
+    print('{:<20} {:<10} {:<10}'.format("Noisy pattern", i, str(tuple(noisy_patterns[i]))))
+    print('{:<20} {:<10} {:<10}'.format("Recovered pattern", i, str(tuple(noisy_pattern))))
+    
+    print("")
+    
